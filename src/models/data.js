@@ -144,5 +144,16 @@ export const DATA = {
         { orderId: 'ORD8', bookId: 'B2', qty: 1, price: 145 },
         { orderId: 'ORD9', bookId: 'B3', qty: 1, price: 165 },
         { orderId: 'ORD4', bookId: 'B20', qty: 1, price: 85 }
+    ],
+
+    // 12. Kategoriler
+    categories: [
+        { id: 'CAT1', name: 'Roman', description: 'Geniş kapsamlı kurgu eserler', subCategories: [{ id: 'SUB1', name: 'Dünya Klasikleri' }, { id: 'SUB2', name: 'Türk Edebiyatı' }] },
+        { id: 'CAT2', name: 'Klasik', description: 'Zamanın ötesindeki başyapıtlar', subCategories: [] },
+        { id: 'CAT3', name: 'Psikoloji', description: 'İnsan zihni ve davranışları', subCategories: [] },
+        { id: 'CAT4', name: 'Tarih', description: 'Geçmişin izleri', subCategories: [] },
+        { id: 'CAT5', name: 'Polisiye', description: 'Gizem ve macera', subCategories: [] },
+        { id: 'CAT6', name: 'Anı', description: 'Yaşanmışlıklar', subCategories: [] },
+        { id: 'CAT7', name: 'Mizah', description: 'Güldüren öyküler', subCategories: [] }
     ]
 };

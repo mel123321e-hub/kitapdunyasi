@@ -21,3 +21,11 @@ export const updateOrderStatus = (id, status) => {
 export const getCustomerOrders = (customerId) => {
     return getOrders().filter(o => o.customerId === customerId);
 };
+
+export const getOrdersByBook = (bookId) => {
+    const items = getEntityData('orderItems');
+    const orderIds = items.filter(i => i.bookId === bookId).map(i => i.orderId);
+    return getOrders().filter(o => orderIds.includes(o.id));
+};
+
+export const getOrderItems = () => getEntityData('orderItems');

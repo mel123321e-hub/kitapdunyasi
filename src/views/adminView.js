@@ -181,6 +181,21 @@ export const renderAdmin = (stats, topBooks, catDist, exportFn) => {
                 </div>
             </transition>
             
+            <!-- Custom Confirmation Modal -->
+            <transition name="scale">
+                <div v-if="showConfirm" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-3xl w-full max-w-sm overflow-hidden p-8 text-center">
+                        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">⚠️</div>
+                        <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2">Emin misiniz?</h3>
+                        <p class="text-sm text-slate-500 mb-6">Bu işlem geri alınamaz ve seçilen kayıt kalıcı olarak silinecektir.</p>
+                        <div class="flex gap-3">
+                            <button @click="showConfirm = false" class="flex-1 py-3 text-sm font-bold text-slate-400 hover:text-slate-600 uppercase">Vazgeç</button>
+                            <button @click="handleDeleteConfirm" class="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-500/20 active:scale-95 transition-all uppercase">Evet, Sil</button>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+            
             <!-- Toast Notification -->
             <transition name="slide-up">
                 <div v-if="toast.show" class="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 px-8 py-4 bg-slate-900 border border-white/10 text-white rounded-2xl shadow-2xl z-[100]">
@@ -197,12 +212,14 @@ export const renderAdmin = (stats, topBooks, catDist, exportFn) => {
                 currentPage: 1,
                 itemsPerPage: 10,
                 showForm: false,
+                showConfirm: false,
                 isEdit: false,
                 toast: { show: false, msg: '' },
                 formData: {},
                 modals: { type: '' },
                 activeItem: null,
                 parentCat: null,
+                confirmTarget: null,
                 tabs: [
                     { id: 'dashboard', name: '📊 Özet' },
                     { id: 'books', name: '📚 Kitaplar' },
@@ -327,6 +344,18 @@ export const renderAdmin = (stats, topBooks, catDist, exportFn) => {
                 const c = customerModel.getCustomer(id);
                 return c ? c.name : 'Misafir';
             },
+            getStatusLabel(status) {
+                const labels = { H: 'Hazırlanıyor', K: 'Kargoya Verildi', T: 'Teslim Edildi' };
+                return labels[status] || status;
+            },
+            getStatusClass(status) {
+                const classes = { 
+                    H: 'bg-amber-100 text-amber-700 border border-amber-200', 
+                    K: 'bg-blue-100 text-blue-700 border border-blue-200', 
+                    T: 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+                };
+                return classes[status] || 'bg-gray-100 text-gray-700';
+            },
             openAddModal() {
                 this.isEdit = false;
                 this.modals.type = this.activeTab === 'categories' ? 'category' : this.activeTab.slice(0,-1);
@@ -371,23 +400,33 @@ export const renderAdmin = (stats, topBooks, catDist, exportFn) => {
                 }
             },
             confirmDelete(item) {
-                if (confirm('Bu kaydı kalıcı olarak silmek istediğinize emin misiniz?')) {
-                    const tab = this.activeTab;
-                    let id = item.id;
-                    if (tab === 'books') bookModel.deleteBook(id);
-                    else if (tab === 'authors') authorModel.deleteAuthor(id);
-                    else if (tab === 'publishers') publisherModel.deletePublisher(id);
-                    else if (tab === 'customers') customerModel.deleteCustomer(id);
-                    else if (tab === 'categories') categoryModel.deleteCategory(id);
-                    this.refresh();
-                    this.showToast('Silme başarılı.');
-                }
+                this.confirmTarget = { type: this.activeTab, item: item };
+                this.showConfirm = true;
             },
             confirmDeleteSub(catId, subId) {
-                if (confirm('Alt kategoriyi silmek istediğinize emin misiniz?')) {
-                    categoryModel.deleteSubCategory(catId, subId);
+                this.confirmTarget = { type: 'subCategory', catId, subId };
+                this.showConfirm = true;
+            },
+            handleDeleteConfirm() {
+                const { type, item, catId, subId } = this.confirmTarget;
+                try {
+                    if (type === 'books') bookModel.deleteBook(item.id);
+                    else if (type === 'authors') {
+                        const canDelete = authorModel.deleteAuthor(item.id);
+                        if (!canDelete) throw new Error('Bu yazara ait kitaplar var, önce onları silmelisiniz.');
+                    }
+                    else if (type === 'publishers') publisherModel.deletePublisher(item.id);
+                    else if (type === 'customers') customerModel.deleteCustomer(item.id);
+                    else if (type === 'categories') categoryModel.deleteCategory(item.id);
+                    else if (type === 'subCategory') categoryModel.deleteSubCategory(catId, subId);
+
+                    this.showToast('Silme işlemi başarılı.');
                     this.refresh();
-                    this.showToast('Alt kategori silindi.');
+                } catch (e) {
+                    this.showToast(e.message, 'error');
+                } finally {
+                    this.showConfirm = false;
+                    this.confirmTarget = null;
                 }
             },
             updateStatus(id, val) {
@@ -398,6 +437,7 @@ export const renderAdmin = (stats, topBooks, catDist, exportFn) => {
             },
             exportData() {
                 initAdminEvents.exportJSON();
+                this.showToast('Veriler indiriliyor...');
             },
             showToast(msg) {
                 this.toast.msg = msg;
@@ -413,5 +453,8 @@ export const renderAdmin = (stats, topBooks, catDist, exportFn) => {
         mounted() {
             this.refresh();
         }
-    };
+    });
+
+    app.mount(root);
+    return root;
 };
