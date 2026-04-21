@@ -1,0 +1,126 @@
+/**
+ * main.css - Temel stiller ve temalar
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #f59e0b;      /* Amber 500 */
+    --primary-dark: #d97706; /* Amber 600 */
+    --secondary: #fbbf24;    /* Amber 400 */
+    --krem: #fefce8;         /* Yellow 50 */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --bg-dark: #0f172a;
+    --text-dark: #f1f5f9;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    background-color: var(--krem);
+    color: var(--slate-800);
+}
+
+.bg-krem { background-color: var(--krem); }
+.text-primary { color: var(--primary); }
+.bg-primary { background-color: var(--primary); }
+
+/* Dark Mode */
+body.dark {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+body.dark .bg-krem { background-color: #0f172a; }
+body.dark .bg-white { background-color: #1e293b; color: white; }
+body.dark .text-gray-900 { color: #f1f5f9; }
+body.dark .text-gray-600 { color: #cbd5e1; }
+body.dark .border { border-color: #334155; }
+
+/* Utils */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Toast */
+#toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.toast {
+    background-color: #1e293b;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    margin-top: 0.5rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+body.dark .modal-content {
+    background: var(--bg-dark);
+    color: white;
+}

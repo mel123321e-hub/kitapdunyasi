@@ -1,0 +1,121 @@
+/**
+ * cards.css - Kitap kartı stilleri
+ */
+
+.book-grid {
+    display: grid;
+    gap: 1rem;
+    padding: 0;
+}
+
+.book-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border: 1px solid var(--slate-200);
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0.75rem;
+    position: relative;
+}
+
+.book-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+.book-img-wrapper {
+    width: 100%;
+    aspect-ratio: 2/3;
+    height: auto;
+    background: var(--slate-50);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+}
+
+.book-fav-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--slate-200);
+    transition: color 0.2s;
+    z-index: 10;
+}
+
+.book-card:hover .book-fav-btn {
+    color: #fda4af; /* Rose-300 */
+}
+
+.book-fav-btn.active {
+    color: #ef4444;
+}
+
+.book-content {
+    padding: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.category-badge {
+    display: none; /* Temada kart içinde kategori görünmüyor, sidebar'da var */
+}
+
+.book-title {
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+    color: var(--slate-800);
+    line-clamp: 1;
+}
+
+.book-author {
+    font-size: 10px;
+    color: var(--slate-500);
+    margin-bottom: 0.5rem;
+}
+
+.book-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto;
+}
+
+.book-price {
+    font-weight: 900;
+    color: var(--primary);
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.book-card .btn-primary {
+    width: 100%;
+    background-color: var(--primary);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.book-card .btn-primary:hover {
+    background-color: var(--primary-dark);
+}
